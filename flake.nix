@@ -34,6 +34,7 @@
             android-sdk
             flutter-sdk.flutter
             google-chrome
+            openapi-generator-cli
             jdk
           ];
 
