@@ -1,129 +1,166 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:meepmrp_client/preferences.dart';
+import 'package:meepmrp_client/widget/home.dart';
+import 'package:one_context/one_context.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+
 import 'package:openapi/api.dart';
 
-void main() {
-  runApp(const MyApp());
+Future<void> main() async {
+
+  final savedThemeMode = await AdaptiveTheme.getThemeMode();
+
+  //await runZonedGuarded<Future<void>>(
+  //  () async {
+  //    WidgetsFlutterBinding.ensureInitialized();
+  //    PackageInfo info = await PackageInfo.fromPlatform();
+  //    String pkg = info.packageName;
+  //    String version = info.version;
+  //    String build = info.buildNumber;
+
+  //    String release = "${pkg}@${version}:${build}";
+
+  //    // TODO: Sentry?
+
+  //    // TODO: pass errors to sentry
+
+  //    final int orientation = await SettingsManager().getValue(
+  //      SCREEN_ORIENTATION,
+  //      SCREEN_ORIENTATION_SYSTEM
+  //    );
+
+  //    List<DeviceOrientation> orientations = [];
+  //    switch (orientation) {
+  //      case SCREEN_ORIENTATION_PORTRAIT:
+  //        orientations.add(DeviceOrientation.portraitUp);
+  //        break;
+  //      case SCREEN_ORIENTATION_LANDSCAPE:
+  //        orientations.add(DeviceOrientation.landscapeLeft);
+  //        break;
+  //      default:
+  //        orientations.add(DeviceOrientation.portraitUp);
+  //        //orientations.add(DeviceOrientation.portraitDown);
+  //        orientations.add(DeviceOrientation.landscapeLeft);
+  //        orientations.add(DeviceOrientation.landscapeRight);
+  //        break;
+  //    }
+
+  //    SystemChrome.setPreferredOrientations(orientations).then(
+  //      (_) {
+  //        runApp(MeepMrpApp(savedThemeMode));
+  //      }
+  //    );
+  //  },
+  //  (Object error, StackTrace stackTrace) async {
+  //    // TODO: report error to sentry or something
+  //  }
+  //);
+  WidgetsFlutterBinding.ensureInitialized();
+  PackageInfo info = await PackageInfo.fromPlatform();
+  String pkg = info.packageName;
+  String version = info.version;
+  String build = info.buildNumber;
+
+  String release = "${pkg}@${version}:${build}";
+
+  // TODO: Sentry?
+
+  // TODO: pass errors to sentry
+
+  final int orientation = await SettingsManager().getValue(
+    SCREEN_ORIENTATION,
+    SCREEN_ORIENTATION_SYSTEM
+  );
+
+  List<DeviceOrientation> orientations = [];
+  switch (orientation) {
+    case SCREEN_ORIENTATION_PORTRAIT:
+      orientations.add(DeviceOrientation.portraitUp);
+      break;
+    case SCREEN_ORIENTATION_LANDSCAPE:
+      orientations.add(DeviceOrientation.landscapeLeft);
+      break;
+    default:
+      orientations.add(DeviceOrientation.portraitUp);
+      //orientations.add(DeviceOrientation.portraitDown);
+      orientations.add(DeviceOrientation.landscapeLeft);
+      orientations.add(DeviceOrientation.landscapeRight);
+      break;
+  }
+
+  SystemChrome.setPreferredOrientations(orientations).then(
+    (_) {
+      runApp(MeepMrpApp(savedThemeMode));
+    }
+  );
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MeepMrpApp extends StatefulWidget {
+  const MeepMrpApp(this.savedThemeMode);
 
-  // This widget is the root of your application.
+  final AdaptiveThemeMode? savedThemeMode;
+
+  @override
+  State<StatefulWidget> createState() => MeepMrpAppState(savedThemeMode);
+
+  static MeepMrpAppState? of(BuildContext context) {
+    return context.findAncestorStateOfType<MeepMrpAppState>();
+  }
+}
+
+class MeepMrpAppState extends State<StatefulWidget> {
+  MeepMrpAppState(this.savedThemeMode) : super();
+
+  //Locale? _locale;
+
+  final AdaptiveThemeMode? savedThemeMode;
+
+  @override
+  void initState() {
+    super.initState();
+
+    runInitTasks();
+  }
+
+  Future<void> runInitTasks() async {
+    // TODO: set locale?
+
+    // TODO: check version?
+
+  }
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+    return AdaptiveTheme(
+      light: ThemeData(
+        brightness: Brightness.light,
+        primarySwatch: Colors.lightBlue,
+        secondaryHeaderColor: Colors.blueGrey
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      dark: ThemeData(
+        brightness: Brightness.dark,
+        primarySwatch: Colors.lightBlue,
+        secondaryHeaderColor: Colors.blueGrey
+      ),
+      initial: savedThemeMode ?? AdaptiveThemeMode.dark,
+      builder: (light, dark) => MaterialApp(
+        theme: light,
+        darkTheme: dark,
+        //debugShowCheckedModeBanner: false,
+        builder: OneContext().builder,
+        navigatorKey: OneContext().key,
+        onGenerateTitle: (BuildContext context) => "MeepMRP",
+        home: HomePage(),
+        // localizationDelegates: []
+        // supportedLocales: supported_locales,
+        // locale: _locale
+      ),
     );
   }
-}
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-  final api = DefaultApi(ApiClient(basePath:"http://localhost:8000"));
-
-  void _incrementCounter() async {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-    Token? result = await api.loginLoginPost("admin", "admin");
-    print(result);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
-  }
 }
