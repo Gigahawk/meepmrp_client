@@ -1,7 +1,5 @@
-import 'dart:io';
-
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:http/http.dart' as http;
+
 import 'package:meepmrp_client/helpers.dart';
 import 'package:meepmrp_client/user_profile.dart';
 import 'package:meepmrp_client/widget/dialogs.dart';
@@ -88,7 +86,13 @@ class MeepMrpApi {
   MeepMrpApi._internal();
   static final MeepMrpApi _api = MeepMrpApi._internal();
 
-  UserProfile? profile;
+  UserProfile? _profile;
+  UserProfile? get profile => _profile;
+  DefaultApi? _client;
+  set profile(UserProfile? prf) {
+    _profile = prf;
+    updateClient();
+  }
   bool _connected = false;
   bool _connecting = false;
   Map<String, dynamic> userInfo = {};
@@ -98,7 +102,7 @@ class MeepMrpApi {
   static const _URL_ROLES = "user/roles/";
   static const _URL_ME = "user/me/";
   String get baseUrl {
-    String url = profile?.server ?? "";
+    String url = _client?.apiClient.basePath ?? "";
     return url;
   }
   String? get serverAddress {
@@ -115,7 +119,53 @@ class MeepMrpApi {
     return !isConnected() && _connecting;
   }
 
-    void disconnectFromServer() {
+  Future<bool> fetchToken(UserProfile userProfile, String username, String password) async {
+    debug("Fetching user token from ${userProfile.server}");
+    profile = userProfile;
+    if (_client == null) {
+      showSnackIcon(
+        "Failed to instantiate client for login",
+        icon: FontAwesomeIcons.circleExclamation,
+        success: false,
+      );
+      return false;
+    }
+    Token? token = await _client!.loginLoginPost(username, password);
+    if (token == null) {
+      showSnackIcon(
+        "Failed to login",
+        icon: FontAwesomeIcons.circleExclamation,
+        success: false,
+      );
+      return false;
+    }
+    final tokenStr = token.accessToken;
+    profile!.token = tokenStr;
+    debug("Received token from server: $tokenStr");
+    await UserProfileDBManager().updateProfile(userProfile);
+    updateClient();
+    return true;
+  }
+
+  void updateClient() {
+    if (_profile != null) {
+      final OAuth? auth = (
+        _profile!.token.isNotEmpty ?
+          OAuth(accessToken: _profile!.token) :
+            null
+      );
+      _client = DefaultApi(
+        ApiClient(
+          basePath: _profile!.server,
+          authentication: auth
+        )
+      );
+    } else {
+      _client = null;
+    }
+  }
+
+  void disconnectFromServer() {
     debug("API : disconnectFromServer()");
 
     _connected = false;
@@ -142,10 +192,29 @@ class MeepMrpApi {
       );
       return false;
     }
+    if (_client == null) {
+      showSnackIcon(
+        "Failed to instantiate client",
+        icon: FontAwesomeIcons.circleExclamation,
+        success: false,
+      );
+      return false;
+    }
 
-    debug("Connecting to apiUrl");
-    showStatusCodeError("apiUrl", 500, details: "NotImplemented");
-    return false;
+    debug("Connecting to ${baseUrl}");
+    try {
+      // TODO: API version matching
+      final info = await _client!.getServerInfoInfoGet();
+      await Future.delayed(const Duration(seconds: 2));
+      debug(info.toString());
+    } on ApiException catch (e) {
+      showServerError(baseUrl, "Server connection error", e.message ?? "Unknown error");
+      return false;
+    } catch (e) {
+      showServerError(baseUrl, "Unknown error", e.toString());
+      return false;
+    }
+    return true;
   }
 
    /*
@@ -153,25 +222,18 @@ class MeepMrpApi {
    * Fetch the user information
    */
   Future<bool> _checkAuth() async {
-    debug("Checking user auth @ ${_URL_ME}");
+    debug("Checking user auth");
 
     userInfo.clear();
 
-    //final response = await get(_URL_ME);
+    User? user = await _client!.getCurrentUserUsersMeGet();
 
-    //if (response.successful() && response.statusCode == 200) {
-    //  userInfo = response.asMap();
-    //  return true;
-    //} else {
-    //  debug("Auth request failed: Server returned status ${response.statusCode}");
-    //  if (response.data != null) {
-    //    debug("Server response: ${response.data.toString()}");
-    //  }
-
-    //  return false;
-    //}
-    debug("Auth request failed: not implemented");
-    return false;
+    if (user == null) {
+      debug("Login failed");
+      return false;
+    }
+    debug("Logged in as ${user.username}");
+    return true;
   }
 
 

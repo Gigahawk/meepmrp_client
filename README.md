@@ -2,6 +2,11 @@
 
 A new Flutter project.
 
+To regenerate api client:
+
+openapi-generator-cli generate -i openapi.json -g dart -o packages/openapi
+
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.

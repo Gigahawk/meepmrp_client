@@ -31,6 +31,7 @@ part 'auth/http_bearer_auth.dart';
 part 'api/default_api.dart';
 
 part 'model/http_validation_error.dart';
+part 'model/server_info.dart';
 part 'model/token.dart';
 part 'model/user.dart';
 part 'model/validation_error.dart';

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:meepmrp_client/pages/select_server_page.dart';
 import 'package:meepmrp_client/widget/drawer.dart';
 
 import 'package:meepmrp_client/widget/refreshable_state.dart';
@@ -47,12 +48,12 @@ class HomePageState extends State<HomePage> with BaseWidgetProperties {
   }
 
   void _selectProfile() {
-    //Navigator.push(
-    //    context, MaterialPageRoute(builder: (context) => InvenTreeSelectServerWidget())
-    //).then((context) {
-    //  // Once we return
-    //  _loadProfile();
-    //});
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => MeepMrpSelectServerWidget())
+    ).then((context) {
+      // Once we return
+      _loadProfile();
+    });
   }
 
     /*
@@ -70,7 +71,7 @@ class HomePageState extends State<HomePage> with BaseWidgetProperties {
     //String title = L10().serverNotConnected;
     //String subtitle = L10().profileSelectOrCreate;
     String title = "Server not connected";
-    String subtitle = "Slect server or create a new profile";
+    String subtitle = "Select server or create a new profile";
 
     if (!validAddress) {
       //title = L10().serverNotSelected;

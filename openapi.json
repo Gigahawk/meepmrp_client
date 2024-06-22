@@ -5,6 +5,47 @@
     "version": "0.1.0"
   },
   "paths": {
+    "/info": {
+      "get": {
+        "summary": "Get Server Info",
+        "operationId": "get_server_info_info_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServerInfo"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/me": {
+      "get": {
+        "summary": "Get Current User",
+        "operationId": "get_current_user_users_me_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
     "/add_user": {
       "post": {
         "summary": "Add User",
@@ -156,6 +197,19 @@
         },
         "type": "object",
         "title": "HTTPValidationError"
+      },
+      "ServerInfo": {
+        "properties": {
+          "api_version": {
+            "type": "integer",
+            "title": "Api Version"
+          }
+        },
+        "type": "object",
+        "required": [
+          "api_version"
+        ],
+        "title": "ServerInfo"
       },
       "Token": {
         "properties": {

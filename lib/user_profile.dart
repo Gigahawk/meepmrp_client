@@ -174,8 +174,8 @@ class UserProfileDBManager {
 
     // If there are no available profiles, create a demo profile
     if (profileList.isEmpty) {
-      //bool added = await SettingsManager().getBool("demo_profile_added", false);
-      bool added = false;
+      bool added = await SettingsManager().getBool("demo_profile_added", false);
+      //bool added = false;
 
       // Don't add a new profile if we have added it previously
       if (!added) {
@@ -184,11 +184,11 @@ class UserProfileDBManager {
 
         UserProfile demoProfile = UserProfile(
           name: "MeepMRP Demo",
-          server: "http://localhost",
+          server: "http://localhost:8000",
           selected: true
         );
 
-        //await addProfile(demoProfile);
+        await addProfile(demoProfile);
 
         profileList.add(demoProfile);
       }

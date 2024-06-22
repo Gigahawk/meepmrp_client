@@ -62,12 +62,15 @@ All URIs are relative to *http://localhost*
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
 *DefaultApi* | [**addUserAddUserPost**](doc//DefaultApi.md#adduseradduserpost) | **POST** /add_user | Add User
+*DefaultApi* | [**getCurrentUserUsersMeGet**](doc//DefaultApi.md#getcurrentuserusersmeget) | **GET** /users/me | Get Current User
+*DefaultApi* | [**getServerInfoInfoGet**](doc//DefaultApi.md#getserverinfoinfoget) | **GET** /info | Get Server Info
 *DefaultApi* | [**loginLoginPost**](doc//DefaultApi.md#loginloginpost) | **POST** /login | Login
 
 
 ## Documentation For Models
 
  - [HTTPValidationError](doc//HTTPValidationError.md)
+ - [ServerInfo](doc//ServerInfo.md)
  - [Token](doc//Token.md)
  - [User](doc//User.md)
  - [ValidationError](doc//ValidationError.md)

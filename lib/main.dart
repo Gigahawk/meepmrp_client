@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:meepmrp_client/preferences.dart';
-import 'package:meepmrp_client/widget/home.dart';
+import 'package:meepmrp_client/pages/home_page.dart';
 import 'package:one_context/one_context.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
