@@ -89,6 +89,8 @@ class MeepMrpApi {
   UserProfile? _profile;
   UserProfile? get profile => _profile;
   DefaultApi? _client;
+  List<String> _permissions = [];
+  List<String> get permissions => List.unmodifiable(_permissions);
   set profile(UserProfile? prf) {
     _profile = prf;
     updateClient();
@@ -144,6 +146,7 @@ class MeepMrpApi {
     debug("Received token from server: $tokenStr");
     await UserProfileDBManager().updateProfile(userProfile);
     updateClient();
+    _permissions = await getPermissions() ?? [];
     return true;
   }
 
@@ -163,6 +166,10 @@ class MeepMrpApi {
     } else {
       _client = null;
     }
+  }
+
+  Future<List<String>?> getPermissions() async {
+    return await _client!.getUserPermissionsPermissionsGet();
   }
 
   void disconnectFromServer() {

@@ -56,6 +56,161 @@ class HomePageState extends State<HomePage> with BaseWidgetProperties {
     });
   }
 
+  Widget _listTile(BuildContext context, String label, IconData icon, {Function()? callback, String role = "", String permission = "", Widget? trailing}) {
+
+    //bool connected = MeepMrpApi().isConnected();
+
+    //bool allowed = true;
+
+    //if (role.isNotEmpty || permission.isNotEmpty) {
+    //  allowed = InvenTreeAPI().checkPermission(role, permission);
+    //}
+
+    return GestureDetector(
+      child: Card(
+        margin: const EdgeInsets.symmetric(
+          vertical: 5,
+          horizontal: 12
+        ),
+        child: ListTile(
+          //leading: FaIcon(icon, color: connected && allowed ? COLOR_ACTION : Colors.grey),
+          leading: FaIcon(icon, color: COLOR_ACTION),
+          title: Text(label),
+          trailing: trailing,
+        ),
+      ),
+      onTap: () {
+        //if (!allowed) {
+        //  showSnackIcon(
+        //    L10().permissionRequired,
+        //    icon: FontAwesomeIcons.circleExclamation,
+        //    success: false,
+        //  );
+        //  return;
+        //}
+
+        if (callback != null) {
+          callback();
+        }
+      },
+    );
+  }
+
+  /*
+   * Constructs a list of tiles for the main screen
+   */
+  List<Widget> getListTiles(BuildContext context) {
+
+
+    List<Widget> tiles = [
+      const Divider(height: 5)
+    ];
+
+    List<String> permissions = MeepMrpApi().permissions;
+
+    // Parts
+    if (permissions.contains("part_read")) {
+      tiles.add(_listTile(
+        context,
+        //L10().parts,
+        "Parts",
+        FontAwesomeIcons.shapes,
+        callback: () {
+          //_showParts(context);
+        },
+      ));
+    }
+
+    //// Starred parts
+    //if (homeShowSubscribed && InvenTreePart().canView) {
+    //  tiles.add(_listTile(
+    //    context,
+    //    L10().partsStarred,
+    //    FontAwesomeIcons.bell,
+    //    callback: () {
+    //      _showStarredParts(context);
+    //    }
+    //  ));
+    //}
+
+    //// Stock button
+    //if (InvenTreeStockItem().canView) {
+    //  tiles.add(_listTile(
+    //      context,
+    //      L10().stock,
+    //      FontAwesomeIcons.boxesStacked,
+    //      callback: () {
+    //        _showStock(context);
+    //      }
+    //  ));
+    //}
+
+    //// Purchase orders
+    //if (homeShowPo && InvenTreePurchaseOrder().canView) {
+    //  tiles.add(_listTile(
+    //      context,
+    //      L10().purchaseOrders,
+    //      FontAwesomeIcons.cartShopping,
+    //      callback: () {
+    //        _showPurchaseOrders(context);
+    //      }
+    //  ));
+    //}
+
+    //if (homeShowSo && InvenTreeSalesOrder().canView) {
+    //  tiles.add(_listTile(
+    //    context,
+    //    L10().salesOrders,
+    //    FontAwesomeIcons.truck,
+    //    callback: () {
+    //      _showSalesOrders(context);
+    //    }
+    //  ));
+    //}
+
+    //// Suppliers
+    //if (homeShowSuppliers && InvenTreePurchaseOrder().canView) {
+    //  tiles.add(_listTile(
+    //      context,
+    //      L10().suppliers,
+    //      FontAwesomeIcons.building,
+    //      callback: () {
+    //        _showSuppliers(context);
+    //      }
+    //  ));
+    //}
+
+    // TODO: Add these tiles back in once the features are fleshed out
+    /*
+
+
+    // Manufacturers
+    if (homeShowManufacturers) {
+      tiles.add(_listTile(
+          context,
+          L10().manufacturers,
+          FontAwesomeIcons.industry,
+          callback: () {
+            _showManufacturers(context);
+          }
+      ));
+    }
+    */
+    //// Customers
+    //if (homeShowCustomers) {
+    //  tiles.add(_listTile(
+    //      context,
+    //      L10().customers,
+    //      FontAwesomeIcons.userTie,
+    //      callback: () {
+    //        _showCustomers(context);
+    //      }
+    //  ));
+    //}
+
+    return tiles;
+  }
+
     /*
    * If the app is not connected to an InvenTree server,
    * display a connection status widget
@@ -66,7 +221,7 @@ class HomePageState extends State<HomePage> with BaseWidgetProperties {
     bool validAddress = serverAddress != null;
     bool connecting = !MeepMrpApi().isConnected() && MeepMrpApi().isConnecting();
 
-    Widget leading = FaIcon(FontAwesomeIcons.circleExclamation, color: COLOR_DANGER);
+    Widget leading = const FaIcon(FontAwesomeIcons.circleExclamation, color: COLOR_DANGER);
     Widget trailing = FaIcon(FontAwesomeIcons.server, color: COLOR_ACTION);
     //String title = L10().serverNotConnected;
     //String subtitle = L10().profileSelectOrCreate;
@@ -118,7 +273,7 @@ class HomePageState extends State<HomePage> with BaseWidgetProperties {
 
     return ListView(
         scrollDirection: Axis.vertical,
-        //children: getListTiles(context),
+        children: getListTiles(context),
     );
   }
 

@@ -12,6 +12,7 @@ Method | HTTP request | Description
 [**addUserAddUserPost**](DefaultApi.md#adduseradduserpost) | **POST** /add_user | Add User
 [**getCurrentUserUsersMeGet**](DefaultApi.md#getcurrentuserusersmeget) | **GET** /users/me | Get Current User
 [**getServerInfoInfoGet**](DefaultApi.md#getserverinfoinfoget) | **GET** /info | Get Server Info
+[**getUserPermissionsPermissionsGet**](DefaultApi.md#getuserpermissionspermissionsget) | **GET** /permissions | Get User Permissions
 [**loginLoginPost**](DefaultApi.md#loginloginpost) | **POST** /login | Login
 
 
@@ -126,6 +127,45 @@ This endpoint does not need any parameter.
 ### Authorization
 
 No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **getUserPermissionsPermissionsGet**
+> List<String> getUserPermissionsPermissionsGet()
+
+Get User Permissions
+
+### Example
+```dart
+import 'package:openapi/api.dart';
+// TODO Configure OAuth2 access token for authorization: OAuth2PasswordBearer
+//defaultApiClient.getAuthentication<OAuth>('OAuth2PasswordBearer').accessToken = 'YOUR_ACCESS_TOKEN';
+
+final api_instance = DefaultApi();
+
+try {
+    final result = api_instance.getUserPermissionsPermissionsGet();
+    print(result);
+} catch (e) {
+    print('Exception when calling DefaultApi->getUserPermissionsPermissionsGet: $e\n');
+}
+```
+
+### Parameters
+This endpoint does not need any parameter.
+
+### Return type
+
+**List<String>**
+
+### Authorization
+
+[OAuth2PasswordBearer](../README.md#OAuth2PasswordBearer)
 
 ### HTTP request headers
 

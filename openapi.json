@@ -46,6 +46,33 @@
         ]
       }
     },
+    "/permissions": {
+      "get": {
+        "summary": "Get User Permissions",
+        "operationId": "get_user_permissions_permissions_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array",
+                  "title": "Response Get User Permissions Permissions Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
     "/add_user": {
       "post": {
         "summary": "Add User",

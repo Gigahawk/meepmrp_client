@@ -64,6 +64,7 @@ Class | Method | HTTP request | Description
 *DefaultApi* | [**addUserAddUserPost**](doc//DefaultApi.md#adduseradduserpost) | **POST** /add_user | Add User
 *DefaultApi* | [**getCurrentUserUsersMeGet**](doc//DefaultApi.md#getcurrentuserusersmeget) | **GET** /users/me | Get Current User
 *DefaultApi* | [**getServerInfoInfoGet**](doc//DefaultApi.md#getserverinfoinfoget) | **GET** /info | Get Server Info
+*DefaultApi* | [**getUserPermissionsPermissionsGet**](doc//DefaultApi.md#getuserpermissionspermissionsget) | **GET** /permissions | Get User Permissions
 *DefaultApi* | [**loginLoginPost**](doc//DefaultApi.md#loginloginpost) | **POST** /login | Login
 
 
